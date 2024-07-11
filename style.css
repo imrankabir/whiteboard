@@ -1,41 +1,44 @@
 body {
   margin: 0;
-  height: 100vh;
   display: flex;
+  height: 100vh;
+  height: 100svh;
   align-items: center;
   flex-direction: column;
-  justify-content: center;
   background-color: #f0f0f0;
+  justify-content: space-evenly;
 }
 
 .toolbar {
-  background: #ddd;
+  gap: 3px;
+  display: flex;
   padding: 8px 10px;
+  background: #ddd;
+  border-radius: 5px;
   margin-bottom: 10px;
-  border-radius: 10px;
+  align-items: center;
+  justify-content: baseline;
 }
 
 canvas {
-  border-radius: 10px;
-  border: 1px solid #000;
+  border-radius: 5px;
+  border: 1px solid #999;
 }
 
 input[type="color"] {
   inline-size: 50px;
-  block-size: 22px;
+  block-size: 26px;
 }
 
 input[type="number"] {
   inline-size: 50px;
-  block-size: 16px;
+  block-size: 20px;
 }
 
 span {
   font-size: 18px;
   cursor: pointer;
-  padding: 0 9px 1px;
+  padding: 1px 15px;
   background: #eee;
   border-radius: 5px;
-  vertical-align: baseline;
-  text-align: center;
 }
