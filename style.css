@@ -39,6 +39,17 @@ span {
   font-size: 18px;
   cursor: pointer;
   padding: 1px 15px;
+  user-select: none;
   background: #eee;
   border-radius: 5px;
+}
+
+.disable {
+  cursor: default;
+  background: #fff;
+}
+
+.enable {
+  cursor: pointer;
+  background: #efe;
 }

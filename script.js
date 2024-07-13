@@ -1,6 +1,8 @@
 const colorPicker = document.getElementById("color-picker");
 const sizePicker = document.getElementById("size-picker");
 const canvas = document.getElementById("whiteboard");
+const undoBtn = document.getElementById("undo-btn");
+const redoBtn = document.getElementById("redo-btn");
 const context = canvas.getContext("2d");
 
 canvas.width = window.innerWidth * 0.95;
@@ -24,16 +26,18 @@ function endPosition(e) {
   data.push(singleData);
   singleData = [];
   if (data.length == 0) {
-    document.getElementById("undo-btn").style.backgroundColor = '#fff';
+    undoBtn.classList.add("disable");
+    undoBtn.classList.remove("enable");
   } else {
-    document.getElementById("undo-btn").style.backgroundColor = '#efe';
+    undoBtn.classList.add("enable");
+    undoBtn.classList.remove("disable");
   }
   e.preventDefault();
 }
 
 function undo() {
   if (data.length == 0) {
-    console.warn('No undo available');
+    console.warn("No undo available");
     return false;
   }
   removedData.push(data.pop());
@@ -42,7 +46,7 @@ function undo() {
 
 function redo() {
   if (removedData.length == 0) {
-    console.warn('No redo available');
+    console.warn("No redo available");
     return false;
   }
   data.push(removedData.pop());
@@ -50,29 +54,33 @@ function redo() {
 }
 
 function drawAll() {
-  clear();
+  clear(false);
   if (data.length == 0) {
-    document.getElementById("undo-btn").style.backgroundColor = '#fff';
+    undoBtn.classList.add("disable");
+    undoBtn.classList.remove("enable");
   } else {
-    document.getElementById("undo-btn").style.backgroundColor = '#efe';
+    undoBtn.classList.add("enable");
+    undoBtn.classList.remove("disable");
   }
   if (removedData.length == 0) {
-    document.getElementById("redo-btn").style.backgroundColor = '#eee';
+    redoBtn.classList.add("disable");
+    redoBtn.classList.remove("enable");
   } else {
-    document.getElementById("redo-btn").style.backgroundColor = '#efe';
+    redoBtn.classList.add("enable");
+    redoBtn.classList.remove("disable");
   }
   context.lineCap = "round";
-  data.forEach(lineData => {
+  data.forEach((lineData) => {
     let c = 0;
-    lineData.forEach(point => {
-      const {x, y, size, color} = point;
+    lineData.forEach((point) => {
+      const { x, y, size, color } = point;
       context.lineWidth = size;
       context.strokeStyle = color;
       if (c == 0) {
         context.beginPath();
         context.lineTo(x, y);
         context.stroke();
-      } else if (lineData.length == c){
+      } else if (lineData.length == c) {
         context.moveTo(x, y);
         context.stroke();
         context.beginPath();
@@ -107,7 +115,7 @@ function draw(e) {
   context.stroke();
   context.beginPath();
   context.moveTo(x, y);
-  singleData.push({x, y, size, color});
+  singleData.push({ x, y, size, color });
   e.preventDefault();
 }
 
@@ -119,7 +127,16 @@ canvas.addEventListener("touchstart", startPosition);
 canvas.addEventListener("touchend", endPosition);
 canvas.addEventListener("touchmove", draw);
 
-const clear = () => context.clearRect(0, 0, canvas.width, canvas.height);
+const clear = (clearData = true) => {
+  undoBtn.classList.add("disable");
+  undoBtn.classList.remove("enable");
+  redoBtn.classList.add("disable");
+  redoBtn.classList.remove("enable");
+  if (clearData) {
+    data = [];
+  }
+  context.clearRect(0, 0, canvas.width, canvas.height);
+}
 
 const download = () => {
   const a = document.createElement("a");
