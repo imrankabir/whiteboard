@@ -134,6 +134,7 @@ const clear = (clearData = true) => {
   redoBtn.classList.remove("enable");
   if (clearData) {
     data = [];
+    removedData = [];
   }
   context.clearRect(0, 0, canvas.width, canvas.height);
 }
