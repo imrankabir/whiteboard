@@ -8,6 +8,10 @@ canvas.height = window.innerHeight * 0.85;
 
 let painting = false;
 
+let data = [];
+let singleData = [];
+let removedData = [];
+
 function startPosition(e) {
   painting = true;
   draw(e);
@@ -17,7 +21,69 @@ function startPosition(e) {
 function endPosition(e) {
   painting = false;
   context.beginPath();
+  data.push(singleData);
+  singleData = [];
+  if (data.length == 0) {
+    document.getElementById("undo-btn").style.backgroundColor = '#fff';
+  } else {
+    document.getElementById("undo-btn").style.backgroundColor = '#efe';
+  }
   e.preventDefault();
+}
+
+function undo() {
+  if (data.length == 0) {
+    console.warn('No undo available');
+    return false;
+  }
+  removedData.push(data.pop());
+  drawAll();
+}
+
+function redo() {
+  if (removedData.length == 0) {
+    console.warn('No redo available');
+    return false;
+  }
+  data.push(removedData.pop());
+  drawAll();
+}
+
+function drawAll() {
+  clear();
+  if (data.length == 0) {
+    document.getElementById("undo-btn").style.backgroundColor = '#fff';
+  } else {
+    document.getElementById("undo-btn").style.backgroundColor = '#efe';
+  }
+  if (removedData.length == 0) {
+    document.getElementById("redo-btn").style.backgroundColor = '#eee';
+  } else {
+    document.getElementById("redo-btn").style.backgroundColor = '#efe';
+  }
+  context.lineCap = "round";
+  data.forEach(lineData => {
+    let c = 0;
+    lineData.forEach(point => {
+      const {x, y, size, color} = point;
+      context.lineWidth = size;
+      context.strokeStyle = color;
+      if (c == 0) {
+        context.beginPath();
+        context.lineTo(x, y);
+        context.stroke();
+      } else if (lineData.length == c){
+        context.moveTo(x, y);
+        context.stroke();
+        context.beginPath();
+      } else {
+        context.lineTo(x, y);
+        context.stroke();
+      }
+      c++;
+    });
+    context.beginPath();
+  });
 }
 
 function draw(e) {
@@ -33,14 +99,15 @@ function draw(e) {
     y = e.clientY - canvas.offsetTop;
   }
 
-  context.lineWidth = sizePicker.value;
+  context.lineWidth = size = sizePicker.value;
   context.lineCap = "round";
-  context.strokeStyle = colorPicker.value;
+  context.strokeStyle = color = colorPicker.value;
 
   context.lineTo(x, y);
   context.stroke();
   context.beginPath();
   context.moveTo(x, y);
+  singleData.push({x, y, size, color});
   e.preventDefault();
 }
 
@@ -62,8 +129,9 @@ const download = () => {
 };
 
 document.getElementById("clear-btn").addEventListener("click", clear);
-
 document.getElementById("download-btn").addEventListener("click", download);
+document.getElementById("undo-btn").addEventListener("click", undo);
+document.getElementById("redo-btn").addEventListener("click", redo);
 
 document.addEventListener("keydown", (e) => {
   switch (e.which) {
@@ -74,6 +142,12 @@ document.addEventListener("keydown", (e) => {
     case 40:
     case 68:
       download();
+      break;
+    case 37:
+      undo();
+      break;
+    case 39:
+      redo();
       break;
   }
 });
