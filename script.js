@@ -9,7 +9,14 @@ const shapeBtn = document.querySelector("#shape-btn");
 canvas.width = window.innerWidth * 0.95;
 canvas.height = window.innerHeight * 0.85;
 
+window.onresize = (e) => {
+  canvas.width = window.innerWidth * 0.95;
+  canvas.height = window.innerHeight * 0.85;
+};
+
 let painting = false;
+let lastX = 0;
+let lastY = 0;
 
 let data = [];
 let singleData = [];
@@ -17,6 +24,9 @@ let removedData = [];
 
 function startPosition(e) {
   painting = true;
+  const { x, y } = getCoordinates(e);
+  lastX = x;
+  lastY = y;
   draw(e);
   e.preventDefault();
 }
@@ -95,11 +105,8 @@ function drawAll() {
   });
 }
 
-function draw(e) {
-  if (!painting) return;
-
+function getCoordinates(e) {
   let x, y;
-
   if (e.type.includes("touch")) {
     x = e.touches[0].clientX - canvas.offsetLeft;
     y = e.touches[0].clientY - canvas.offsetTop;
@@ -107,16 +114,37 @@ function draw(e) {
     x = e.clientX - canvas.offsetLeft;
     y = e.clientY - canvas.offsetTop;
   }
+  return { x, y };
+}
+
+function draw(e) {
+  if (!painting) return;
+
+  let { x, y } = getCoordinates(e);
 
   context.lineWidth = size = sizeBtn.value;
   context.strokeStyle = color = colorBtn.value;
   context.lineCap = shape = shapeBtn.checked ? "square" : "round";
+
+  if (e.shiftKey) {
+    const dx = x - lastX;
+    const dy = y - lastY;
+    if (Math.abs(dx) > Math.abs(dy)) {
+      y = lastY;
+    } else {
+      x = lastX;
+    }
+  }
 
   context.lineTo(x, y);
   context.stroke();
   context.beginPath();
   context.moveTo(x, y);
   singleData.push({ x, y, shape, size, color });
+
+  lastX = x;
+  lastY = y;
+
   e.preventDefault();
 }
 
@@ -138,7 +166,7 @@ const clear = (clearData = true) => {
     removedData = [];
   }
   context.clearRect(0, 0, canvas.width, canvas.height);
-}
+};
 
 const download = () => {
   const a = document.createElement("a");
@@ -147,10 +175,10 @@ const download = () => {
   a.click();
 };
 
-document.getElementById("clear-btn").addEventListener("click", clear);
-document.getElementById("download-btn").addEventListener("click", download);
-document.getElementById("undo-btn").addEventListener("click", undo);
-document.getElementById("redo-btn").addEventListener("click", redo);
+document.querySelector("#clear-btn").addEventListener("click", clear);
+document.querySelector("#download-btn").addEventListener("click", download);
+document.querySelector("#undo-btn").addEventListener("click", undo);
+document.querySelector("#redo-btn").addEventListener("click", redo);
 
 document.addEventListener("keydown", (e) => {
   switch (e.which) {
