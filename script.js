@@ -4,7 +4,7 @@ const sizeBtn = document.querySelector("#size-btn");
 const undoBtn = document.querySelector("#undo-btn");
 const redoBtn = document.querySelector("#redo-btn");
 const colorBtn = document.querySelector("#color-btn");
-const shapeBtn = document.querySelector("#shape-btn").checked;
+const shapeBtn = document.querySelector("#shape-btn");
 
 canvas.width = window.innerWidth * 0.95;
 canvas.height = window.innerHeight * 0.85;
@@ -16,7 +16,6 @@ let singleData = [];
 let removedData = [];
 
 function startPosition(e) {
-  console.log({shapeBtn});
   painting = true;
   draw(e);
   e.preventDefault();
@@ -71,11 +70,11 @@ function drawAll() {
     redoBtn.classList.add("enable");
     redoBtn.classList.remove("disable");
   }
-  context.lineCap = "round";
   data.forEach((lineData) => {
     let c = 0;
     lineData.forEach((point) => {
-      const { x, y, size, color } = point;
+      const { x, y, shape, size, color } = point;
+      context.lineCap = shape;
       context.lineWidth = size;
       context.strokeStyle = color;
       if (c == 0) {
@@ -110,14 +109,14 @@ function draw(e) {
   }
 
   context.lineWidth = size = sizeBtn.value;
-  context.lineCap = "round";
   context.strokeStyle = color = colorBtn.value;
+  context.lineCap = shape = shapeBtn.checked ? "square" : "round";
 
   context.lineTo(x, y);
   context.stroke();
   context.beginPath();
   context.moveTo(x, y);
-  singleData.push({ x, y, size, color });
+  singleData.push({ x, y, shape, size, color });
   e.preventDefault();
 }
 
