@@ -1,23 +1,33 @@
 <!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1, user-scalable=0" />
-    <title>Whiteboard</title>
-    <link rel="shortcut icon" type="image/x-icon" href="favicon.png" />
-    <link rel="stylesheet" href="style.css" />
-  </head>
-  <body>
-    <div class="toolbar">
-      <input type="checkbox" id="shape-btn" title="Square" />
-      <input type="color" id="color-btn" value="#000000" />
-      <input type="number" id="size-btn" min="1" max="200" value="10" />
-      <span id="undo-btn" title="Undo (&#8656;)">&#8634;</span>
-      <span id="redo-btn" title="Redo (&#8658;)">&#8635;</span>
-      <span id="clear-btn" title="Clear board (c)">&#10226;</span>
-      <span id="download-btn" title="Download picture (d)">&#8595;</span>
+<html>
+<head>
+    <title>Event Propagation</title>
+</head>
+<body>
+    <div id="parent" style="padding: 50px; background-color: lightblue;">
+        Parent
+        <div id="child" style="padding: 50px; background-color: lightcoral;">
+            Child
+        </div>
     </div>
-    <canvas id="whiteboard"></canvas>
-    <script src="script.js"></script>
-  </body>
+
+    <script>
+        document.getElementById("parent").addEventListener("click", function() {
+            console.log("Parent clicked!");
+        }, false); // false for bubbling phase
+
+        document.getElementById("child").addEventListener("click", function() {
+            console.log("Child clicked!");
+        }, false); // false for bubbling phase
+
+        document.getElementById("parent").addEventListener("click", function() {
+            console.log("Parent capturing!");
+        }, true); // true for capturing phase
+
+        document.getElementById("child").addEventListener("click", function() {
+            console.log("Child capturing!");
+        }, true); // true for capturing phase
+        console.log("----------------------------");
+    </script>
+</body>
 </html>

@@ -5,6 +5,7 @@ const undoBtn = document.querySelector("#undo-btn");
 const redoBtn = document.querySelector("#redo-btn");
 const colorBtn = document.querySelector("#color-btn");
 const shapeBtn = document.querySelector("#shape-btn");
+const straightBtn = document.querySelector("#straight-btn");
 
 canvas.width = window.innerWidth * 0.95;
 canvas.height = window.innerHeight * 0.85;
@@ -126,7 +127,7 @@ function draw(e) {
   context.strokeStyle = color = colorBtn.value;
   context.lineCap = shape = shapeBtn.checked ? "square" : "round";
 
-  if (e.shiftKey) {
+  if (straightBtn.checked) {
     const dx = x - lastX;
     const dy = y - lastY;
     if (Math.abs(dx) > Math.abs(dy)) {
