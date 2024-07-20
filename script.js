@@ -1,9 +1,10 @@
-const colorPicker = document.getElementById("color-picker");
-const sizePicker = document.getElementById("size-picker");
-const canvas = document.getElementById("whiteboard");
-const undoBtn = document.getElementById("undo-btn");
-const redoBtn = document.getElementById("redo-btn");
+const canvas = document.querySelector("#whiteboard");
 const context = canvas.getContext("2d");
+const sizeBtn = document.querySelector("#size-btn");
+const undoBtn = document.querySelector("#undo-btn");
+const redoBtn = document.querySelector("#redo-btn");
+const colorBtn = document.querySelector("#color-btn");
+const shapeBtn = document.querySelector("#shape-btn").checked;
 
 canvas.width = window.innerWidth * 0.95;
 canvas.height = window.innerHeight * 0.85;
@@ -15,6 +16,7 @@ let singleData = [];
 let removedData = [];
 
 function startPosition(e) {
+  console.log({shapeBtn});
   painting = true;
   draw(e);
   e.preventDefault();
@@ -107,9 +109,9 @@ function draw(e) {
     y = e.clientY - canvas.offsetTop;
   }
 
-  context.lineWidth = size = sizePicker.value;
+  context.lineWidth = size = sizeBtn.value;
   context.lineCap = "round";
-  context.strokeStyle = color = colorPicker.value;
+  context.strokeStyle = color = colorBtn.value;
 
   context.lineTo(x, y);
   context.stroke();
