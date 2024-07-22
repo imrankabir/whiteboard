@@ -10,18 +10,63 @@ const straightBtn = document.querySelector("#straight-btn");
 canvas.width = window.innerWidth * 0.95;
 canvas.height = window.innerHeight * 0.85;
 
-window.onresize = (e) => {
-  canvas.width = window.innerWidth * 0.95;
-  canvas.height = window.innerHeight * 0.85;
-};
-
 let painting = false;
+const boardKey = 'board';
+const boardSettings = 'boardSettings';
 let lastX = 0;
 let lastY = 0;
 
 let data = [];
 let singleData = [];
 let removedData = [];
+
+const saveData = ({data, removedData}) => localStorage.setItem(boardKey, JSON.stringify({data, removedData}));
+const getData = e => JSON.parse(localStorage.getItem(boardKey));
+
+const saveSettings = ({straight, shape, color, size}) => localStorage.setItem(boardSettings, JSON.stringify({straight, shape, color, size}));
+const getSettings = e => JSON.parse(localStorage.getItem(boardSettings));
+
+const getCurrentSettings = e => {
+  const straight = straightBtn.checked;
+  const shape = shapeBtn.checked;
+  const color = colorBtn.value;
+  const size = sizeBtn.value;
+  console.log({straight, shape, color, size});
+  return {straight, shape, color, size};
+}
+
+window.addEventListener('pagehide', function(event) {
+  saveSettings(getCurrentSettings());
+});
+
+document.addEventListener('visibilitychange', function() {
+    if (document.visibilityState === 'hidden') {
+      saveSettings(getCurrentSettings());
+    }
+});
+
+window.addEventListener('beforeunload', function(event) {
+  saveSettings(getCurrentSettings());
+});
+
+window.onload = e => {
+  const {straight, shape, color, size} = getSettings();
+  straightBtn.checked = straight;
+  shapeBtn.checked = shape;
+  colorBtn.value = color;
+  sizeBtn.value = size;
+  const {data: d, removedData: rd} = getData();
+  data = d;
+  removedData = rd;
+  if (d.length !== 0) {
+    drawAll();
+  }
+};
+
+window.onresize = e => {
+  canvas.width = window.innerWidth * 0.95;
+  canvas.height = window.innerHeight * 0.85;
+};
 
 function startPosition(e) {
   painting = true;
@@ -36,6 +81,7 @@ function endPosition(e) {
   painting = false;
   context.beginPath();
   data.push(singleData);
+  saveData({data, removedData});
   singleData = [];
   if (data.length == 0) {
     undoBtn.classList.add("disable");
@@ -53,6 +99,7 @@ function undo() {
     return false;
   }
   removedData.push(data.pop());
+  saveData({data, removedData});
   drawAll();
 }
 
@@ -62,6 +109,7 @@ function redo() {
     return false;
   }
   data.push(removedData.pop());
+  saveData({data, removedData});
   drawAll();
 }
 
@@ -165,6 +213,13 @@ const clear = (clearData = true) => {
   if (clearData) {
     data = [];
     removedData = [];
+    saveData({data, removedData});
+    const straight = false;
+    const shape = false;
+    const color = '#000000';
+    const size = 10;
+    saveSettings({straight, shape, color, size});
+    console.warn({straight, shape, color, size});
   }
   context.clearRect(0, 0, canvas.width, canvas.height);
 };
