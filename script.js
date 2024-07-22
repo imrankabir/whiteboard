@@ -31,7 +31,6 @@ const getCurrentSettings = e => {
   const shape = shapeBtn.checked;
   const color = colorBtn.value;
   const size = sizeBtn.value;
-  console.log({straight, shape, color, size});
   return {straight, shape, color, size};
 }
 
@@ -219,7 +218,10 @@ const clear = (clearData = true) => {
     const color = '#000000';
     const size = 10;
     saveSettings({straight, shape, color, size});
-    console.warn({straight, shape, color, size});
+    straightBtn.checked = straight;
+    shapeBtn.checked = shape;
+    colorBtn.value = color;
+    sizeBtn.value = size;
   }
   context.clearRect(0, 0, canvas.width, canvas.height);
 };
