@@ -34,19 +34,15 @@ const getCurrentSettings = e => {
   return {straight, shape, color, size};
 }
 
-window.addEventListener('pagehide', function(event) {
-  saveSettings(getCurrentSettings());
-});
+straightBtn.addEventListener('change', e => saveSettings(getCurrentSettings()));
+shapeBtn.addEventListener('change', e => saveSettings(getCurrentSettings()));
+colorBtn.addEventListener('change', e => saveSettings(getCurrentSettings()));
+sizeBtn.addEventListener('keyup', e => saveSettings(getCurrentSettings()));
 
-document.addEventListener('visibilitychange', function() {
-    if (document.visibilityState === 'hidden') {
-      saveSettings(getCurrentSettings());
-    }
-});
-
-window.addEventListener('beforeunload', function(event) {
-  saveSettings(getCurrentSettings());
-});
+straightBtn.addEventListener('touchend', e => saveSettings(getCurrentSettings()));
+shapeBtn.addEventListener('touchend', e => saveSettings(getCurrentSettings()));
+colorBtn.addEventListener('touchend', e => saveSettings(getCurrentSettings()));
+sizeBtn.addEventListener('touchend', e => saveSettings(getCurrentSettings()));
 
 window.onload = e => {
   const {straight, shape, color, size} = getSettings();
@@ -62,10 +58,13 @@ window.onload = e => {
   }
 };
 
-window.onresize = e => {
-  canvas.width = window.innerWidth * 0.95;
-  canvas.height = window.innerHeight * 0.85;
-};
+// window.onresize = e => {
+//   canvas.width = window.innerWidth * 0.95;
+//   canvas.height = window.innerHeight * 0.85;
+// };
+
+canvas.addEventListener('touchstart', e => sizeBtn.blur());
+canvas.addEventListener('click', e => sizeBtn.blur());
 
 function startPosition(e) {
   painting = true;
