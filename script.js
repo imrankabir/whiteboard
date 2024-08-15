@@ -11,7 +11,7 @@ canvas.width = window.innerWidth * 0.95;
 canvas.height = window.innerHeight * 0.85;
 
 let painting = false;
-const app = 'whiteboard';
+const app = 'Whiteboard';
 const BOARD_KEY = 'board';
 const VISITS_KEY = 'whiteboard-visits';
 const BOARD_SETTINGS = 'board-settings';
