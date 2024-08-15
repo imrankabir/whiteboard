@@ -11,8 +11,10 @@ canvas.width = window.innerWidth * 0.95;
 canvas.height = window.innerHeight * 0.85;
 
 let painting = false;
-const boardKey = 'board';
-const boardSettings = 'boardSettings';
+const app = 'whiteboard';
+const BOARD_KEY = 'board';
+const VISITS_KEY = 'whiteboard-visits';
+const BOARD_SETTINGS = 'board-settings';
 let lastX = 0;
 let lastY = 0;
 
@@ -20,11 +22,11 @@ let data = [];
 let singleData = [];
 let removedData = [];
 
-const saveData = ({data, removedData}) => localStorage.setItem(boardKey, JSON.stringify({data, removedData}));
-const getData = e => JSON.parse(localStorage.getItem(boardKey));
+const saveData = ({data, removedData}) => localStorage.setItem(BOARD_KEY, JSON.stringify({data, removedData}));
+const getData = e => JSON.parse(localStorage.getItem(BOARD_KEY));
 
-const saveSettings = ({straight, shape, color, size}) => localStorage.setItem(boardSettings, JSON.stringify({straight, shape, color, size}));
-const getSettings = e => JSON.parse(localStorage.getItem(boardSettings));
+const saveSettings = ({straight, shape, color, size}) => localStorage.setItem(BOARD_SETTINGS, JSON.stringify({straight, shape, color, size}));
+const getSettings = e => JSON.parse(localStorage.getItem(BOARD_SETTINGS));
 
 const getCurrentSettings = e => {
   const straight = straightBtn.checked;
@@ -66,7 +68,7 @@ window.onload = e => {
 canvas.addEventListener('touchstart', e => sizeBtn.blur());
 canvas.addEventListener('click', e => sizeBtn.blur());
 
-function startPosition(e) {
+const startPosition = e => {
   painting = true;
   const { x, y } = getCoordinates(e);
   lastX = x;
@@ -75,7 +77,7 @@ function startPosition(e) {
   e.preventDefault();
 }
 
-function endPosition(e) {
+const endPosition = e => {
   painting = false;
   context.beginPath();
   data.push(singleData);
@@ -91,7 +93,7 @@ function endPosition(e) {
   e.preventDefault();
 }
 
-function undo() {
+const undo = e => {
   if (data.length == 0) {
     console.warn("No undo available");
     return false;
@@ -101,7 +103,7 @@ function undo() {
   drawAll();
 }
 
-function redo() {
+const redo = e => {
   if (removedData.length == 0) {
     console.warn("No redo available");
     return false;
@@ -111,7 +113,7 @@ function redo() {
   drawAll();
 }
 
-function drawAll() {
+const drawAll = e => {
   clear(false);
   if (data.length == 0) {
     undoBtn.classList.add("disable");
@@ -152,7 +154,7 @@ function drawAll() {
   });
 }
 
-function getCoordinates(e) {
+const getCoordinates = e => {
   let x, y;
   if (e.type.includes("touch")) {
     x = e.touches[0].clientX - canvas.offsetLeft;
@@ -164,7 +166,7 @@ function getCoordinates(e) {
   return { x, y };
 }
 
-function draw(e) {
+const draw = e => {
   if (!painting) return;
 
   let { x, y } = getCoordinates(e);
@@ -195,6 +197,63 @@ function draw(e) {
   e.preventDefault();
 }
 
+const padTwoDigits = num => num.toString().padStart(2, "0");
+
+const formatDate = (date, dateDiveder = '-') => {
+  return (
+    [
+      date.getFullYear(),
+      padTwoDigits(date.getMonth() + 1),
+      padTwoDigits(date.getDate()),
+    ].join(dateDiveder) +
+    " " +
+    [
+      padTwoDigits(date.getHours()),
+      padTwoDigits(date.getMinutes()),
+      padTwoDigits(date.getSeconds()),
+    ].join(":")
+  );
+}
+
+async function getVisitorIP() {
+    try {
+        const response = await fetch('https://api.ipify.org?format=json');
+        const data = await response.json();
+        return data.ip;
+    } catch (error) {
+        console.error('Error fetching IP address:', error);
+        return 'Unknown IP';
+    }
+}
+
+async function trackVisitor() {
+    const ip = await getVisitorIP();
+    const time = formatDate(new Date());
+    let visits = JSON.parse(localStorage.getItem(VISITS_KEY)) || [];
+    visits.push({ip, time, app});
+    localStorage.setItem(VISITS_KEY, JSON.stringify(visits));
+}
+
+async function persistVisits() {
+  const headers = new Headers();
+  headers.append('Content-Type', 'application/json');
+  // headers.append('mode', 'no-cors');
+  const response = await fetch('https://enabled-humpback-lively.ngrok-free.app/save-visits.php', {
+    method: 'POST',
+    body: JSON.stringify(localStorage.getItem(VISITS_KEY)),
+    headers
+  });
+
+  if (response.ok === true && response.status === 200) {
+    console.log(response);
+    localStorage.setItem(VISITS_KEY, JSON.stringify([]));
+  }
+
+}
+
+trackVisitor();
+persistVisits();
+
 canvas.addEventListener("mousedown", startPosition);
 canvas.addEventListener("mouseup", endPosition);
 canvas.addEventListener("mousemove", draw);
@@ -216,16 +275,16 @@ const clear = (clearData = true) => {
     const shape = false;
     const color = '#000000';
     const size = 10;
-    saveSettings({straight, shape, color, size});
-    straightBtn.checked = straight;
-    shapeBtn.checked = shape;
-    colorBtn.value = color;
-    sizeBtn.value = size;
+    // saveSettings({straight, shape, color, size});
+    // straightBtn.checked = straight;
+    // shapeBtn.checked = shape;
+    // colorBtn.value = color;
+    // sizeBtn.value = size;
   }
   context.clearRect(0, 0, canvas.width, canvas.height);
 };
 
-const download = () => {
+const download = e => {
   const a = document.createElement("a");
   a.href = canvas.toDataURL("image/png");
   a.download = new Date().getTime();
@@ -237,7 +296,7 @@ document.querySelector("#download-btn").addEventListener("click", download);
 document.querySelector("#undo-btn").addEventListener("click", undo);
 document.querySelector("#redo-btn").addEventListener("click", redo);
 
-document.addEventListener("keydown", (e) => {
+document.addEventListener("keydown", e => {
   switch (e.which) {
     case 38:
     case 67:
