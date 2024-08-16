@@ -1,3 +1,16 @@
+const app = 'Whiteboard';
+const BOARD_KEY = 'board';
+
+let painting = false;
+const VISITS_KEY = 'whiteboard-visits';
+const BOARD_SETTINGS = 'board-settings';
+let lastX = 0;
+let lastY = 0;
+
+let data = [];
+let singleData = [];
+let removedData = [];
+
 const canvas = document.querySelector("#whiteboard");
 const context = canvas.getContext("2d");
 const sizeBtn = document.querySelector("#size-btn");
@@ -9,18 +22,6 @@ const straightBtn = document.querySelector("#straight-btn");
 
 canvas.width = window.innerWidth * 0.95;
 canvas.height = window.innerHeight * 0.85;
-
-let painting = false;
-const app = 'Whiteboard';
-const BOARD_KEY = 'board';
-const VISITS_KEY = 'whiteboard-visits';
-const BOARD_SETTINGS = 'board-settings';
-let lastX = 0;
-let lastY = 0;
-
-let data = [];
-let singleData = [];
-let removedData = [];
 
 const saveData = ({data, removedData}) => localStorage.setItem(BOARD_KEY, JSON.stringify({data, removedData}));
 const getData = e => JSON.parse(localStorage.getItem(BOARD_KEY));
@@ -232,6 +233,7 @@ async function trackVisitor() {
     let visits = JSON.parse(localStorage.getItem(VISITS_KEY)) || [];
     visits.push({ip, time, app});
     localStorage.setItem(VISITS_KEY, JSON.stringify(visits));
+    persistVisits();
 }
 
 async function persistVisits() {
@@ -252,7 +254,6 @@ async function persistVisits() {
 }
 
 trackVisitor();
-persistVisits();
 
 canvas.addEventListener("mousedown", startPosition);
 canvas.addEventListener("mouseup", endPosition);
