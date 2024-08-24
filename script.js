@@ -24,7 +24,7 @@ canvas.width = window.innerWidth * 0.95;
 canvas.height = window.innerHeight * 0.85;
 
 const saveData = ({data, removedData}) => localStorage.setItem(BOARD_KEY, JSON.stringify({data, removedData}));
-const getData = e => JSON.parse(localStorage.getItem(BOARD_KEY));
+const getData = e => JSON.parse(localStorage.getItem(BOARD_KEY)) ?? {data: [], removedData: []};
 
 const saveSettings = ({straight, shape, color, size}) => localStorage.setItem(BOARD_SETTINGS, JSON.stringify({straight, shape, color, size}));
 const getSettings = e => JSON.parse(localStorage.getItem(BOARD_SETTINGS)) ?? {straight: false, shape: false, color: '#000000', size: 10};
