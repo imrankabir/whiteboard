@@ -114,6 +114,28 @@ const redo = e => {
   drawAll();
 }
 
+const clear = (clearData = true) => {
+  undoBtn.classList.add("disable");
+  undoBtn.classList.remove("enable");
+  redoBtn.classList.add("disable");
+  redoBtn.classList.remove("enable");
+  if (clearData) {
+    data = [];
+    removedData = [];
+    saveData({data, removedData});
+    const straight = false;
+    const shape = false;
+    const color = '#000000';
+    const size = 10;
+    // saveSettings({straight, shape, color, size});
+    // straightBtn.checked = straight;
+    // shapeBtn.checked = shape;
+    // colorBtn.value = color;
+    // sizeBtn.value = size;
+  }
+  context.clearRect(0, 0, canvas.width, canvas.height);
+};
+
 const drawAll = e => {
   clear(false);
   if (data.length == 0) {
@@ -207,28 +229,6 @@ canvas.addEventListener("mousemove", draw);
 canvas.addEventListener("touchstart", startPosition);
 canvas.addEventListener("touchend", endPosition);
 canvas.addEventListener("touchmove", draw);
-
-const clear = (clearData = true) => {
-  undoBtn.classList.add("disable");
-  undoBtn.classList.remove("enable");
-  redoBtn.classList.add("disable");
-  redoBtn.classList.remove("enable");
-  if (clearData) {
-    data = [];
-    removedData = [];
-    saveData({data, removedData});
-    const straight = false;
-    const shape = false;
-    const color = '#000000';
-    const size = 10;
-    // saveSettings({straight, shape, color, size});
-    // straightBtn.checked = straight;
-    // shapeBtn.checked = shape;
-    // colorBtn.value = color;
-    // sizeBtn.value = size;
-  }
-  context.clearRect(0, 0, canvas.width, canvas.height);
-};
 
 const download = e => {
   const a = document.createElement("a");
