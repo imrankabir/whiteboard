@@ -48,8 +48,7 @@ colorBtn.addEventListener('touchend', e => saveSettings(getCurrentSettings()));
 sizeBtn.addEventListener('touchend', e => saveSettings(getCurrentSettings()));
 
 window.onload = e => {
-  const settings = getSettings();
-  const {straight, shape, color, size} = settings;
+  const {straight, shape, color, size} = getSettings();
   straightBtn.checked = straight;
   shapeBtn.checked = shape;
   colorBtn.value = color;
