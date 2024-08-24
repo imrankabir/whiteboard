@@ -27,7 +27,7 @@ const saveData = ({data, removedData}) => localStorage.setItem(BOARD_KEY, JSON.s
 const getData = e => JSON.parse(localStorage.getItem(BOARD_KEY));
 
 const saveSettings = ({straight, shape, color, size}) => localStorage.setItem(BOARD_SETTINGS, JSON.stringify({straight, shape, color, size}));
-const getSettings = e => JSON.parse(localStorage.getItem(BOARD_SETTINGS));
+const getSettings = e => JSON.parse(localStorage.getItem(BOARD_SETTINGS)) ?? {straight: false, shape: false, color: '#000000', size: 10};
 
 const getCurrentSettings = e => {
   const straight = straightBtn.checked;
@@ -48,7 +48,8 @@ colorBtn.addEventListener('touchend', e => saveSettings(getCurrentSettings()));
 sizeBtn.addEventListener('touchend', e => saveSettings(getCurrentSettings()));
 
 window.onload = e => {
-  const {straight, shape, color, size} = getSettings();
+  const settings = getSettings();
+  const {straight, shape, color, size} = settings;
   straightBtn.checked = straight;
   shapeBtn.checked = shape;
   colorBtn.value = color;
