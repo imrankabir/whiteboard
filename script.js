@@ -220,7 +220,7 @@ const draw = e => {
   e.preventDefault();
 }
 
-trackVisitor();
+// trackVisitor();
 
 canvas.addEventListener("mousedown", startPosition);
 canvas.addEventListener("mouseup", endPosition);
