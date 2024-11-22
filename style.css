@@ -8,47 +8,40 @@ body {
   background-color: #f0f0f0;
   justify-content: space-evenly;
 }
-
 .toolbar {
   gap: 3px;
   display: flex;
-  padding: 8px 10px;
   background: #ddd;
+  padding: 8px 10px;
   border-radius: 5px;
   margin-bottom: 10px;
   align-items: center;
   justify-content: baseline;
 }
-
 canvas {
   border-radius: 5px;
   border: 1px solid #999;
 }
-
-input[type="color"] {
-  inline-size: 50px;
+input[type='color'] {
   block-size: 26px;
-}
-
-input[type="number"] {
   inline-size: 50px;
-  block-size: 20px;
 }
-
+input[type='number'] {
+  block-size: 20px;
+  inline-size: 50px;
+}
 span {
   font-size: 18px;
   cursor: pointer;
+  background: #eee;
   padding: 1px 15px;
   user-select: none;
-  background: #eee;
   border-radius: 5px;
 }
-
 .disable {
   cursor: default;
   background: #fff;
 }
-
 .enable {
   cursor: pointer;
   background: #efe;

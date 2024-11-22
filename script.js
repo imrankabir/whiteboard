@@ -11,14 +11,14 @@ let data = [];
 let singleData = [];
 let removedData = [];
 
-const canvas = document.querySelector("#whiteboard");
-const context = canvas.getContext("2d");
-const sizeBtn = document.querySelector("#size-btn");
-const undoBtn = document.querySelector("#undo-btn");
-const redoBtn = document.querySelector("#redo-btn");
-const colorBtn = document.querySelector("#color-btn");
-const shapeBtn = document.querySelector("#shape-btn");
-const straightBtn = document.querySelector("#straight-btn");
+const canvas = document.querySelector('#whiteboard');
+const context = canvas.getContext('2d');
+const sizeBtn = document.querySelector('#size-btn');
+const undoBtn = document.querySelector('#undo-btn');
+const redoBtn = document.querySelector('#redo-btn');
+const colorBtn = document.querySelector('#color-btn');
+const shapeBtn = document.querySelector('#shape-btn');
+const straightBtn = document.querySelector('#straight-btn');
 
 canvas.width = window.innerWidth * 0.95;
 canvas.height = window.innerHeight * 0.85;
@@ -85,18 +85,18 @@ const endPosition = e => {
   saveData({data, removedData});
   singleData = [];
   if (data.length == 0) {
-    undoBtn.classList.add("disable");
-    undoBtn.classList.remove("enable");
+    undoBtn.classList.add('disable');
+    undoBtn.classList.remove('enable');
   } else {
-    undoBtn.classList.add("enable");
-    undoBtn.classList.remove("disable");
+    undoBtn.classList.add('enable');
+    undoBtn.classList.remove('disable');
   }
   e.preventDefault();
 }
 
 const undo = e => {
   if (data.length == 0) {
-    console.warn("No undo available");
+    console.warn('No undo available');
     return false;
   }
   removedData.push(data.pop());
@@ -106,7 +106,7 @@ const undo = e => {
 
 const redo = e => {
   if (removedData.length == 0) {
-    console.warn("No redo available");
+    console.warn('No redo available');
     return false;
   }
   data.push(removedData.pop());
@@ -115,10 +115,10 @@ const redo = e => {
 }
 
 const clear = (clearData = true) => {
-  undoBtn.classList.add("disable");
-  undoBtn.classList.remove("enable");
-  redoBtn.classList.add("disable");
-  redoBtn.classList.remove("enable");
+  undoBtn.classList.add('disable');
+  undoBtn.classList.remove('enable');
+  redoBtn.classList.add('disable');
+  redoBtn.classList.remove('enable');
   if (clearData) {
     data = [];
     removedData = [];
@@ -139,18 +139,18 @@ const clear = (clearData = true) => {
 const drawAll = e => {
   clear(false);
   if (data.length == 0) {
-    undoBtn.classList.add("disable");
-    undoBtn.classList.remove("enable");
+    undoBtn.classList.add('disable');
+    undoBtn.classList.remove('enable');
   } else {
-    undoBtn.classList.add("enable");
-    undoBtn.classList.remove("disable");
+    undoBtn.classList.add('enable');
+    undoBtn.classList.remove('disable');
   }
   if (removedData.length == 0) {
-    redoBtn.classList.add("disable");
-    redoBtn.classList.remove("enable");
+    redoBtn.classList.add('disable');
+    redoBtn.classList.remove('enable');
   } else {
-    redoBtn.classList.add("enable");
-    redoBtn.classList.remove("disable");
+    redoBtn.classList.add('enable');
+    redoBtn.classList.remove('disable');
   }
   data.forEach((lineData) => {
     let c = 0;
@@ -179,7 +179,7 @@ const drawAll = e => {
 
 const getCoordinates = e => {
   let x, y;
-  if (e.type.includes("touch")) {
+  if (e.type.includes('touch')) {
     x = e.touches[0].clientX - canvas.offsetLeft;
     y = e.touches[0].clientY - canvas.offsetTop;
   } else {
@@ -196,7 +196,7 @@ const draw = e => {
 
   context.lineWidth = size = sizeBtn.value;
   context.strokeStyle = color = colorBtn.value;
-  context.lineCap = shape = shapeBtn.checked ? "square" : "round";
+  context.lineCap = shape = shapeBtn.checked ? 'square' : 'round';
 
   if (straightBtn.checked) {
     const dx = x - lastX;
@@ -222,27 +222,27 @@ const draw = e => {
 
 // trackVisitor();
 
-canvas.addEventListener("mousedown", startPosition);
-canvas.addEventListener("mouseup", endPosition);
-canvas.addEventListener("mousemove", draw);
+canvas.addEventListener('mousedown', startPosition);
+canvas.addEventListener('mouseup', endPosition);
+canvas.addEventListener('mousemove', draw);
 
-canvas.addEventListener("touchstart", startPosition);
-canvas.addEventListener("touchend", endPosition);
-canvas.addEventListener("touchmove", draw);
+canvas.addEventListener('touchstart', startPosition);
+canvas.addEventListener('touchend', endPosition);
+canvas.addEventListener('touchmove', draw);
 
 const download = e => {
-  const a = document.createElement("a");
-  a.href = canvas.toDataURL("image/png");
+  const a = document.createElement('a');
+  a.href = canvas.toDataURL('image/png');
   a.download = new Date().getTime();
   a.click();
 };
 
-document.querySelector("#clear-btn").addEventListener("click", clear);
-document.querySelector("#download-btn").addEventListener("click", download);
-document.querySelector("#undo-btn").addEventListener("click", undo);
-document.querySelector("#redo-btn").addEventListener("click", redo);
+document.querySelector('#clear-btn').addEventListener('click', clear);
+document.querySelector('#download-btn').addEventListener('click', download);
+document.querySelector('#undo-btn').addEventListener('click', undo);
+document.querySelector('#redo-btn').addEventListener('click', redo);
 
-document.addEventListener("keydown", e => {
+document.addEventListener('keydown', e => {
   switch (e.which) {
     case 38:
     case 67:
