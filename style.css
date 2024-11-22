@@ -20,7 +20,7 @@ body {
 }
 canvas {
   border-radius: 5px;
-  border: 1px solid #999;
+  border: 1px solid #abc;
 }
 input[type='color'] {
   block-size: 26px;
