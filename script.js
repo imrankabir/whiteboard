@@ -16,6 +16,7 @@ const context = canvas.getContext('2d');
 const sizeBtn = document.querySelector('#size-btn');
 const undoBtn = document.querySelector('#undo-btn');
 const redoBtn = document.querySelector('#redo-btn');
+const clearBtn = document.querySelector('#clear-btn');
 const colorBtn = document.querySelector('#color-btn');
 const shapeBtn = document.querySelector('#shape-btn');
 const straightBtn = document.querySelector('#straight-btn');
@@ -79,19 +80,16 @@ const startPosition = e => {
 };
 
 const endPosition = e => {
-  painting = false;
-  context.beginPath();
-  data.push(singleData);
-  saveData({data, removedData});
-  singleData = [];
-  if (data.length == 0) {
-    undoBtn.classList.add('disable');
-    undoBtn.classList.remove('enable');
-  } else {
+    painting = false;
+    context.beginPath();
+    data.push(singleData);
+    saveData({data, removedData});
+    singleData = [];
     undoBtn.classList.add('enable');
     undoBtn.classList.remove('disable');
-  }
-  e.preventDefault();
+    clearBtn.classList.add('enable');
+    clearBtn.classList.remove('disable');
+    e.preventDefault();
 };
 
 const undo = e => {
@@ -119,6 +117,8 @@ const clear = (clearData = true) => {
   undoBtn.classList.remove('enable');
   redoBtn.classList.add('disable');
   redoBtn.classList.remove('enable');
+  clearBtn.classList.add('disable');
+  clearBtn.classList.remove('enable');
   if (clearData) {
     data = [];
     removedData = [];
@@ -138,19 +138,17 @@ const clear = (clearData = true) => {
 
 const drawAll = e => {
   clear(false);
-  if (data.length == 0) {
-    undoBtn.classList.add('disable');
-    undoBtn.classList.remove('enable');
-  } else {
+  if (data.length !== 0) {
     undoBtn.classList.add('enable');
     undoBtn.classList.remove('disable');
   }
-  if (removedData.length == 0) {
-    redoBtn.classList.add('disable');
-    redoBtn.classList.remove('enable');
-  } else {
+  if (removedData.length !== 0) {
     redoBtn.classList.add('enable');
     redoBtn.classList.remove('disable');
+  }
+  if (data.length !== 0 || removedData.length !== 0) {
+    clearBtn.classList.add('enable');
+    clearBtn.classList.remove('disable');
   }
   data.forEach(lineData => {
     let c = 0;
