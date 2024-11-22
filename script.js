@@ -35,7 +35,7 @@ const getCurrentSettings = e => {
   const color = colorBtn.value;
   const size = sizeBtn.value;
   return {straight, shape, color, size};
-}
+};
 
 straightBtn.addEventListener('change', e => saveSettings(getCurrentSettings()));
 shapeBtn.addEventListener('change', e => saveSettings(getCurrentSettings()));
@@ -76,7 +76,7 @@ const startPosition = e => {
   lastY = y;
   draw(e);
   e.preventDefault();
-}
+};
 
 const endPosition = e => {
   painting = false;
@@ -92,7 +92,7 @@ const endPosition = e => {
     undoBtn.classList.remove('disable');
   }
   e.preventDefault();
-}
+};
 
 const undo = e => {
   if (data.length == 0) {
@@ -102,7 +102,7 @@ const undo = e => {
   removedData.push(data.pop());
   saveData({data, removedData});
   drawAll();
-}
+};
 
 const redo = e => {
   if (removedData.length == 0) {
@@ -112,7 +112,7 @@ const redo = e => {
   data.push(removedData.pop());
   saveData({data, removedData});
   drawAll();
-}
+};
 
 const clear = (clearData = true) => {
   undoBtn.classList.add('disable');
@@ -152,9 +152,9 @@ const drawAll = e => {
     redoBtn.classList.add('enable');
     redoBtn.classList.remove('disable');
   }
-  data.forEach((lineData) => {
+  data.forEach(lineData => {
     let c = 0;
-    lineData.forEach((point) => {
+    lineData.forEach(point => {
       const { x, y, shape, size, color } = point;
       context.lineCap = shape;
       context.lineWidth = size;
@@ -175,7 +175,7 @@ const drawAll = e => {
     });
     context.beginPath();
   });
-}
+};
 
 const getCoordinates = e => {
   let x, y;
@@ -187,7 +187,7 @@ const getCoordinates = e => {
     y = e.clientY - canvas.offsetTop;
   }
   return { x, y };
-}
+};
 
 const draw = e => {
   if (!painting) return;
@@ -218,7 +218,7 @@ const draw = e => {
   lastY = y;
 
   e.preventDefault();
-}
+};
 
 // trackVisitor();
 
