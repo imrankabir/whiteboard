@@ -12,7 +12,7 @@ let singleData = [];
 let removedData = [];
 
 const canvas = document.querySelector('#whiteboard');
-const context = canvas.getContext('2d');
+const ctx = canvas.getContext('2d');
 const sizeBtn = document.querySelector('#size-btn');
 const undoBtn = document.querySelector('#undo-btn');
 const redoBtn = document.querySelector('#redo-btn');
@@ -81,7 +81,7 @@ const startPosition = e => {
 
 const endPosition = e => {
     painting = false;
-    context.beginPath();
+    ctx.beginPath();
     data.push(singleData);
     saveData({data, removedData});
     singleData = [];
@@ -133,7 +133,7 @@ const clear = (clearData = true) => {
     // colorBtn.value = color;
     // sizeBtn.value = size;
   }
-  context.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
 };
 
 const drawAll = e => {
@@ -154,24 +154,24 @@ const drawAll = e => {
     let c = 0;
     lineData.forEach(point => {
       const { x, y, shape, size, color } = point;
-      context.lineCap = shape;
-      context.lineWidth = size;
-      context.strokeStyle = color;
+      ctx.lineCap = shape;
+      ctx.lineWidth = size;
+      ctx.strokeStyle = color;
       if (c == 0) {
-        context.beginPath();
-        context.lineTo(x, y);
-        context.stroke();
+        ctx.beginPath();
+        ctx.lineTo(x, y);
+        ctx.stroke();
       } else if (lineData.length == c) {
-        context.moveTo(x, y);
-        context.stroke();
-        context.beginPath();
+        ctx.moveTo(x, y);
+        ctx.stroke();
+        ctx.beginPath();
       } else {
-        context.lineTo(x, y);
-        context.stroke();
+        ctx.lineTo(x, y);
+        ctx.stroke();
       }
       c++;
     });
-    context.beginPath();
+    ctx.beginPath();
   });
 };
 
@@ -189,13 +189,10 @@ const getCoordinates = e => {
 
 const draw = e => {
   if (!painting) return;
-
   let { x, y } = getCoordinates(e);
-
-  context.lineWidth = size = sizeBtn.value;
-  context.strokeStyle = color = colorBtn.value;
-  context.lineCap = shape = shapeBtn.checked ? 'square' : 'round';
-
+  ctx.lineWidth = size = sizeBtn.value;
+  ctx.strokeStyle = color = colorBtn.value;
+  ctx.lineCap = shape = shapeBtn.checked ? 'square' : 'round';
   if (straightBtn.checked) {
     const dx = x - lastX;
     const dy = y - lastY;
@@ -205,16 +202,15 @@ const draw = e => {
       x = lastX;
     }
   }
-
-  context.lineTo(x, y);
-  context.stroke();
-  context.beginPath();
-  context.moveTo(x, y);
-  singleData.push({ x, y, shape, size, color });
-
+  ctx.lineTo(x, y);
+  ctx.stroke();
+  ctx.beginPath();
+  ctx.moveTo(x, y);
+  if (x || y) {
+    singleData.push({ x, y, shape, size, color });
+  }
   lastX = x;
   lastY = y;
-
   e.preventDefault();
 };
 
@@ -235,10 +231,10 @@ const download = e => {
   a.click();
 };
 
-document.querySelector('#clear-btn').addEventListener('click', clear);
+undoBtn.addEventListener('click', undo);
+redoBtn.addEventListener('click', redo);
+clearBtn.addEventListener('click', clear);
 document.querySelector('#download-btn').addEventListener('click', download);
-document.querySelector('#undo-btn').addEventListener('click', undo);
-document.querySelector('#redo-btn').addEventListener('click', redo);
 
 document.addEventListener('keydown', e => {
   switch (e.which) {
